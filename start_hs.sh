@@ -45,10 +45,10 @@ HOST_IP=$2
 
 # docker run -d --name dendrite$HSID -e HSID monolith
 
-if ! dropdb --if-exists synapse${HSID} ; then
-	echo "Failed to drop database, bailing"
-	exit 1
-fi
+#if ! dropdb --if-exists synapse${HSID} ; then
+#	echo "Failed to drop database, bailing"
+#	exit 1
+#fi
 
 psql --variable="ON_ERROR_STOP=" -f synapse_template.sql > /dev/null 2>&1
 createdb -O synapse synapse${HSID} -T synapse_template
@@ -100,6 +100,7 @@ docker run -d --name synapse$HSID \
 	-e SYNAPSE_LOG_HOST=$HOST_IP \
 	-e SYNAPSE_USE_PROXY=1 \
 	-e PROXY_DUMP_PAYLOADS=1 \
+	--mount type=bind,source=/home/test/Development/matrix-low-bandwidth/ultra-synapse/synapse/synapse,destination=/usr/local/lib/python3.7/site-packages/synapse \
 	synapse
 
 # or replace the last line for a dummy docker...

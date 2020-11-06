@@ -62,9 +62,10 @@ async def put(url, data):
 class Server(object):
     _id = 0
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, name=None):
         self.x = x
         self.y = y
+        self.name = name  # label name
         self.id = Server._id
         self.ip = None
         self.mac = None
@@ -452,7 +453,7 @@ class Mesh:
 
         # XXX: frontend relies on index in data.nodes matches the server ID
         for _, server in sorted(self.servers.items()):
-            data["nodes"].append({"name": server.id, "x": server.x, "y": server.y})
+            data["nodes"].append({"name": server.id, "label": server.name, "x": server.x, "y": server.y})
             for neighbour in server.neighbours:
                 if server.id < neighbour.id:
                     link = {
@@ -543,7 +544,8 @@ def send_static(filename):
 async def on_add_server():
     # {
     #   "x": 120,
-    #   "y": 562
+    #   "y": 562,
+    #   "name: "ABC"
     # }
     incoming_json = await request.get_json()
     if not incoming_json:
@@ -552,8 +554,9 @@ async def on_add_server():
 
     x = incoming_json.get("x")
     y = incoming_json.get("y")
+    name = incoming_json.get("name")
 
-    server = await mesh.add_server(Server(x, y))
+    server = await mesh.add_server(Server(x, y, name))
     return jsonify({"id": server.id})
 
 

@@ -264,7 +264,7 @@ body {
         let t2Enter = labelEnter.append("text")
 
         t2.merge(t2Enter)
-            .text(d=>d.local_echo ? '' : d.name)
+            .text(d=>d.local_echo ? '' : d.label)
     }
 
     function updateLinks() {
@@ -442,7 +442,7 @@ body {
         fetch("/server", {
             method: "POST",
             headers: { 'Content-type': 'application/json '},
-            body: JSON.stringify({ x: node.x, y: node.y }),
+            body: JSON.stringify({ x: node.x, y: node.y, name: node.name }),
         }).then(r=>{
             // XXX: we could grab then node ID at this point and sync incrementally
             // rather than just refresh everything
